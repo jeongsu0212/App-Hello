@@ -9,8 +9,14 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.HashMap;
+
+import core.AsyncResponse;
+import core.PostResponseAsyncTask;
+
 public class LoginActivity extends AppCompatActivity {
     Button btnLogin;
+    EditText editTextID, editTextPassword;
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -48,12 +54,22 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         btnLogin = findViewById(R.id.btnLogin);
+        editTextID = findViewById(R.id.editTextID);
+        editTextPassword = findViewById(R.id.editTextPassword);
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EditText editTextID, editTextPassword;
-                editTextID = findViewById(R.id.editTextID);
-                editTextPassword = findViewById(R.id.editTextPassword);
+                //스프링으로 보낼 데이터를 해시맵 타입을 저장
+                HashMap postDataParams = new HashMap();
+                postDataParams.put("txtUsername",editTextID.getText().toString());
+                postDataParams.put("txtPassword",editTextPassword.getText().toString());
+                //스프링앱 주소를 지정
+                String requestUrl = "http://192.168.100.18:8080/android/login";
+                //jsp의 Ajax과 같은 역할의 AsyncTask클래스 사용
+                PostResponseAsyncTask readTask = new PostResponseAsyncTask(LoginActivity.this, postDataParams, new AsyncResponse() {
+
+                });
+                //Intent는 안드로이드앱에서 액티비티간 데이터를 전송하는 클래스
                 Intent mainIntent = new Intent(LoginActivity.this, MainActivity.class);
                 mainIntent.putExtra("editTextID", editTextID.getText().toString());
                 mainIntent.putExtra("editTextPassword", editTextPassword.getText().toString());
