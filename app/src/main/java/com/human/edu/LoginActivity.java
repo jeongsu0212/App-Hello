@@ -2,6 +2,7 @@ package com.human.edu;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -67,13 +68,26 @@ public class LoginActivity extends AppCompatActivity {
                 String requestUrl = "http://192.168.100.18:8080/android/login";
                 //jsp의 Ajax과 같은 역할의 AsyncTask클래스 사용
                 PostResponseAsyncTask readTask = new PostResponseAsyncTask(LoginActivity.this, postDataParams, new AsyncResponse() {
-
+                    @Override
+                    public void processFinish(String output) {//output는 스프링앱에서 전송받은 로그인 사용자 정보
+                        Toast.makeText(LoginActivity.this, output+"디버그", Toast.LENGTH_SHORT).show();
+                        String jsonString = output.substring(output.indexOf('{'),output.indexOf('}'));
+                        if(!jsonString.equals("{}")) { //로그인 사용자 정보가 있으면
+                           Log.i("디버그", jsonString);
+                           //로그인 이후 액티비티를 여기서 띄우기
+                        }else{
+                            Toast.makeText(LoginActivity.this, "로그인 실패", Toast.LENGTH_LONG).show();
+                        }
+                    }
                 });
+                readTask.execute(requestUrl);//1번 작업(백그라운드호출)
+                /* 로그인 인증 이후에 사용
                 //Intent는 안드로이드앱에서 액티비티간 데이터를 전송하는 클래스
                 Intent mainIntent = new Intent(LoginActivity.this, MainActivity.class);
                 mainIntent.putExtra("editTextID", editTextID.getText().toString());
                 mainIntent.putExtra("editTextPassword", editTextPassword.getText().toString());
                 startActivity(mainIntent);
+                 */
             }
         });
     }
