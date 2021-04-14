@@ -43,7 +43,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
     }
 
     public interface OnItemClickListener {
-        void onItemClick(View v,int position);
+        void onItemClick(View v,int position);//인터페이스 메서드명세
     }
 
     //인터페이스 온클릭리스터에 대한 셋메서드 생성(여기서사용X,SubActivity에서 사용)
