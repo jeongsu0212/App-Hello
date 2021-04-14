@@ -1,6 +1,7 @@
 package com.human.edu;
 
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -23,7 +24,7 @@ public class SubActivity extends AppCompatActivity {
     private RecyclerAdapter mRecyclerAdapter;
     private List mItemList = new ArrayList<MemberVO>();
     //어댑터에서 선택한 값 확인 변수(선택한 회원을 삭제하기 위해서)
-    private int currentCursorId = -1;
+    private String currentCursorId = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,6 +37,22 @@ public class SubActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(mRecyclerAdapter);//데이터없는 빈 어댑터를 뷰화면에 바인딩시킴
         getAllData();
+        mRecyclerAdapter.setOnItemClickListener(new RecyclerAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View v, int position) {
+                MemberVO memberVO = (MemberVO) mItemList.get(position);
+                currentCursorId = memberVO.getUser_id();
+                //Toast.makeText(getApplicationContext(),"현재선택한 회원ID는 "+currentCursorId, Toast.LENGTH_LONG).show();
+                deleteUserData(currentCursorId);
+            }
+        });
+    }
+
+    //RestAPI 서버로 UserId를 전송해서 스프링앱의 사용자를 삭제하는 메서드
+    private void deleteUserData(String currentCursorId) {
+        //삭제 대화상자에 보여줄 메세지를 만듭니다.
+        String message = "해당 회원을 삭제 하시겠습니까?<br />" +
+                "";
     }
 
     //RestAPI 서버에서 전송받은 데이터를 리사이클러뷰 어댑터에 바인딩 시킴
