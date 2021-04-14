@@ -1,7 +1,6 @@
 package com.human.edu;
 
 import android.os.Bundle;
-import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -33,7 +32,7 @@ public class SubActivity extends AppCompatActivity {
         mRecyclerAdapter = new RecyclerAdapter(mItemList);
         //리사이클러뷰xml과 어댑터클래스를 바인딩
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
-        //recyclerView.setHasFixedSize(true);
+        recyclerView.setHasFixedSize(true);//리사이클러 뷰의 높이를 고정.
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(mRecyclerAdapter);//데이터없는 빈 어댑터를 뷰화면에 바인딩시킴
         getAllData();
@@ -50,14 +49,22 @@ public class SubActivity extends AppCompatActivity {
 
             @Override
             public void processFinish(String output) {
-                Log.i("RestAPI 텍스트: ", output);
                 ArrayList<MemberVO> memberList = new JsonConverter<MemberVO>().toArrayList(output, MemberVO.class);
                 //위 컨버트한 memberList변수를 어댑터에 바인딩 시키기(아래)
-                for(MemberVO vaule: memberList) {
+                for(MemberVO value: memberList) {
                     //resultList 에 1개 레코드씩 저장 -> 어댑터에 데이터 바인딩예정
-
+                    //Log.i("RestAPI테스트: ", value.getUser_id());
+                    String p_id = value.getUser_id();
+                    String p_name = value.getUser_name();
+                    String p_email = value.getEmail();
+                    resultList.add(new MemberVO(p_id,p_name,p_email));
                 }
+                //화면출력
+                mItemList.clear();
+                mItemList.addAll(resultList);
+                mRecyclerAdapter.notifyDataSetChanged();//어댑터 객체가 리프레시 됨.
             }
         });
+        readTask.execute(requestUrl);//비동기 통신 시작명령.
     }
 }
